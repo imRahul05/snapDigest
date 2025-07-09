@@ -6,7 +6,7 @@ const getNetworkInfo = () => {
     const { effectiveType, downlink } = navigator.connection;
     return {
       effectiveType: effectiveType || "unknown",
-      downlink: downlink || 0, // in Mbps
+      downlink: downlink || 0, 
     };
   }
   return {

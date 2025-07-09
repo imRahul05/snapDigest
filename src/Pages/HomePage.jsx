@@ -32,10 +32,10 @@ const HomePage = () => {
             textAlign: 'center'
           }}>
             <h3>📱 Adaptive Content</h3>
-            <p>Content quality adjusts based on your network speed</p>
+            <p>Responsive design...</p>
           </div>
           
-          <div className="feature-card" style={{
+          {/* <div className="feature-card" style={{
             padding: '20px',
             backgroundColor: '#f8f9fa',
             borderRadius: '8px',
@@ -43,7 +43,7 @@ const HomePage = () => {
           }}>
             <h3>🔍 Personalized</h3>
             <p>Relevant information without the noise</p>
-          </div>
+          </div> */}
         </div>
       </div>
       

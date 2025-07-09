@@ -16,8 +16,9 @@ const AdaptiveNewsReader = () => {
   const [permissionStatus, setPermissionStatus] = useState("prompt");
   const [isLoading, setIsLoading] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { effectiveType, downlink } = useNetworkInfo(); // ✅ updated
+  const { effectiveType, downlink } = useNetworkInfo(); 
   const articleRefs = useRef([]);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     checkLocationPermission();
@@ -33,8 +34,23 @@ const AdaptiveNewsReader = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+
+    
   }, []);
 
+  useEffect(() => {
+  const updateOnlineStatus = () => {
+    setIsOnline(navigator.onLine);
+  };
+
+  window.addEventListener("online", updateOnlineStatus);
+  window.addEventListener("offline", updateOnlineStatus);
+
+  return () => {
+    window.removeEventListener("online", updateOnlineStatus);
+    window.removeEventListener("offline", updateOnlineStatus);
+  };
+}, []);
   const checkLocationPermission = () => {
     if (navigator.permissions && navigator.permissions.query) {
       navigator.permissions
@@ -86,21 +102,42 @@ const AdaptiveNewsReader = () => {
     fetchLocationData();
   };
 
-  const getContentType = () => {
-    if (effectiveType === "slow-2g" || effectiveType === "2g") {
-      return "Loading minimal text content due to slow connection.";
-    } else if (effectiveType === "3g") {
-      return "Loading standard content.";
-    } else if (effectiveType === "4g") {
-      return "Loading high-quality images and videos.";
-    } else {
-      return "Connection type unknown. Loading default content.";
-    }
-  };
+  // const getContentType = () => {
+  //   if (effectiveType === "slow-2g" || effectiveType === "2g") {
+  //     return "Loading minimal text content due to slow connection.";
+  //   } else if (effectiveType === "3g") {
+  //     return "Loading standard content.";
+  //   } else if (effectiveType === "4g") {
+  //     return "Loading high-quality images and videos.";
+  //   } else {
+  //     return "Connection type unknown. Loading default content.";
+  //   }
+  // };
 
+  const getContentType = () => {
+  if (!isOnline) {
+    return "You are offline. Showing cached or limited content.";
+  }
+
+  if (effectiveType === "slow-2g" || effectiveType === "2g") {
+    return "Loading minimal text content due to slow connection.";
+  } else if (effectiveType === "3g") {
+    return "Loading standard content.";
+  } else if (effectiveType === "4g") {
+    return "Loading high-quality images and videos.";
+  } else {
+    return "Connection type unknown. Loading default content.";
+  }
+};
+
+  // const getFetchMode = () => {
+  //   return effectiveType === "4g" ? "high" : "low";
+  // };
   const getFetchMode = () => {
-    return effectiveType === "4g" ? "high" : "low";
-  };
+  if (!isOnline) return "offline"; // could load from cache or fallback
+  return effectiveType === "4g" ? "high" : "low";
+};
+
 
   return (
     <div className="news-container">

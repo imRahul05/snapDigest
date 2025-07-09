@@ -86,7 +86,7 @@ const fetchLocationName = async (lat, lon) => {
 // };
 
  const fetchNewsFromAddress = async (keyword = "India", results = 10) => {
-  const API_KEY = '686df453c4bb47c64aeef35a'; // move to .env in production
+  const API_KEY = '686df453c4bb47c64aeef35a'; 
 
   const url = `https://api.scrapingdog.com/google_news/?api_key=${API_KEY}&query=${encodeURIComponent(keyword)}&results=${results}&country=us`;
 
