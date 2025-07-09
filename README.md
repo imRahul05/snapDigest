@@ -26,6 +26,49 @@ SnapDigest is an adaptive news reader application that personalizes content base
 - **Progress Indicator**: Visual progress bar while reading articles
 - **Offline Support**: Basic caching for offline reading
 
+
+
+### 1. Homepage
+
+Browse news to get started.
+
+![Browse News](src/assets/image.png)
+
+---
+
+### 2. Allow Location Access
+
+Click on **Allow** when prompted to access your location.
+
+![Allow Location](src/assets/image2.png)
+
+---
+
+### 3. Grant Permission
+
+Make sure permission is granted.
+
+![Grant Permission](src/assets/imagex.png)
+
+---
+
+### 4. Scrolling Progress Bar
+
+As you scroll, a canvas-based progress bar updates dynamically.
+
+![Scrolling Progress](src/assets/image3.png)
+
+---
+
+### 5. Final News Display
+
+Your personalized news appears based on location and network speed.
+
+![News Display](src/assets/image4.png)
+
+---
+
+
 ## 🔧 Technologies Used
 
 - **React**: UI library for building component-based interfaces
