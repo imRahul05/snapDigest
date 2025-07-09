@@ -54,33 +54,52 @@ const fetchLocationName = async (lat, lon) => {
 //   const newsData = await newsRes.json();
 //   return newsData.articles;
 // };
-const fetchNewsFromAddress = async (city, state) => {
-  const keywordParts = ["India"];
+// const fetchNewsFromAddress = async (city, state) => {
+//   const keywordParts = ["India"];
 
-  if (state) keywordParts.unshift(state);  // add to beginning
-  if (city) keywordParts.unshift(city);    // add to beginning
+//   if (state) keywordParts.unshift(state);  // add to beginning
+//   if (city) keywordParts.unshift(city);    // add to beginning
 
-  const keyword = keywordParts.join(" "); // e.g., "Bangalore Karnataka India"
+//   const keyword = keywordParts.join(" "); // e.g., "Bangalore Karnataka India"
 
-  const options = {
-    method: 'GET',
-    url: 'https://google-news13.p.rapidapi.com/search',
-    params: {
-      keyword,
-      lr: 'en-US'
-    },
-    headers: {
-      'x-rapidapi-key': import.meta.env.VITE_NEWS_API_KEY,
-      'x-rapidapi-host': 'google-news13.p.rapidapi.com'
-    }
-  };
+//   const options = {
+//     method: 'GET',
+//     url: 'https://google-news13.p.rapidapi.com/search',
+//     params: {
+//       keyword,
+//       lr: 'en-US'
+//     },
+//     headers: {
+//       'x-rapidapi-key': import.meta.env.VITE_NEWS_API_KEY,
+//       'x-rapidapi-host': 'google-news13.p.rapidapi.com'
+//     }
+//   };
+
+//   try {
+//     const response = await axios.request(options);
+//     console.log(response)
+//     return response.data.items || [];
+//   } catch (error) {
+//     console.error("Failed to fetch keyword news:", error.response?.data || error.message);
+//     return [];
+//   }
+// };
+
+ const fetchNewsFromAddress = async (keyword = "India", results = 10) => {
+  const API_KEY = '686df453c4bb47c64aeef35a'; // move to .env in production
+
+  const url = `https://api.scrapingdog.com/google_news/?api_key=${API_KEY}&query=${encodeURIComponent(keyword)}&results=${results}&country=us`;
 
   try {
-    const response = await axios.request(options);
-    console.log(response)
-    return response.data.items || [];
+    const response = await axios.get(url);
+    console.log(response.data.news_results)
+    if (response.data.success === false) {
+      throw new Error(response.data.message || "Unknown error");
+    }
+
+    return response.data.news_results || [];
   } catch (error) {
-    console.error("Failed to fetch keyword news:", error.response?.data || error.message);
+    console.error("🛑 Failed to fetch Google News:", error.message || error);
     return [];
   }
 };

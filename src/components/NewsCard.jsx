@@ -4,13 +4,13 @@ const NewsCard = ({ article }) => {
   const {
     title,
     snippet,
-    newsUrl,
-    images,
+    url,
+    imgSrc,
     publisher,
     timestamp
   } = article;
 
-  const imageUrl = images?.thumbnail;
+  const imageUrl = imgSrc?.thumbnail;
 
   return (
     <div style={styles.card}>
@@ -22,7 +22,7 @@ const NewsCard = ({ article }) => {
           <strong>{publisher || "Unknown Source"}</strong> •{" "}
           {timestamp ? new Date(parseInt(timestamp)).toLocaleString() : "Unknown time"}
         </p>
-        <a href={newsUrl} target="_blank" rel="noopener noreferrer">
+        <a href={url} target="_blank" rel="noopener noreferrer">
           Read full article →
         </a>
       </div>
