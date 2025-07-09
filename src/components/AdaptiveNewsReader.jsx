@@ -16,13 +16,13 @@ const AdaptiveNewsReader = () => {
   const [permissionStatus, setPermissionStatus] = useState("prompt");
   const [isLoading, setIsLoading] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const connectionType = useNetworkInfo();
+  const { effectiveType, downlink } = useNetworkInfo(); // ✅ updated
   const articleRefs = useRef([]);
-  
+
   useEffect(() => {
     checkLocationPermission();
   }, []);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -30,21 +30,21 @@ const AdaptiveNewsReader = () => {
       const scrollPercent = scrollTop / docHeight;
       setScrollProgress(scrollPercent > 0 ? scrollPercent : 0);
     };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const checkLocationPermission = () => {
     if (navigator.permissions && navigator.permissions.query) {
-      navigator.permissions.query({ name: 'geolocation' })
+      navigator.permissions
+        .query({ name: "geolocation" })
         .then((result) => {
           setPermissionStatus(result.state);
           if (result.state === "granted") {
             fetchLocationData();
           }
-          
-          // Listen for permission changes
+
           result.onchange = () => {
             setPermissionStatus(result.state);
             if (result.state === "granted") {
@@ -53,7 +53,6 @@ const AdaptiveNewsReader = () => {
           };
         });
     } else {
-      // Fallback for browsers that don't support permissions API
       fetchLocationData();
     }
   };
@@ -63,10 +62,16 @@ const AdaptiveNewsReader = () => {
     getCurrentPosition(
       async (coords) => {
         setLocation(coords);
-        const locationData = await fetchLocationName(coords.latitude, coords.longitude);
+        const locationData = await fetchLocationName(
+          coords.latitude,
+          coords.longitude
+        );
         setPlaceName(locationData.formatted);
 
-        const news = await fetchNewsFromAddress(locationData.city, locationData.state);
+        const news = await fetchNewsFromAddress(
+          locationData.city,
+          locationData.state
+        );
         setArticles(news?.slice(0, 6) || []);
         setIsLoading(false);
       },
@@ -82,11 +87,11 @@ const AdaptiveNewsReader = () => {
   };
 
   const getContentType = () => {
-    if (connectionType === "slow-2g" || connectionType === "2g") {
+    if (effectiveType === "slow-2g" || effectiveType === "2g") {
       return "Loading minimal text content due to slow connection.";
-    } else if (connectionType === "3g") {
+    } else if (effectiveType === "3g") {
       return "Loading standard content.";
-    } else if (connectionType === "4g") {
+    } else if (effectiveType === "4g") {
       return "Loading high-quality images and videos.";
     } else {
       return "Connection type unknown. Loading default content.";
@@ -94,17 +99,14 @@ const AdaptiveNewsReader = () => {
   };
 
   const getFetchMode = () => {
-    if (connectionType === "slow-2g" || connectionType === "2g") {
-      return "low";
-    } else {
-      return "high";
-    }
+    return effectiveType === "4g" ? "high" : "low";
   };
 
   return (
     <div className="news-container">
+      <CanvasProgressBar progress={scrollProgress} />
       <h1 className="section-title">📰 Local News Digest</h1>
-      
+
       {permissionStatus !== "granted" && (
         <div className="permission-card">
           <h3>📍 Location Access Needed</h3>
@@ -114,7 +116,7 @@ const AdaptiveNewsReader = () => {
           </button>
         </div>
       )}
-      
+
       {permissionStatus === "granted" && (
         <div className="location-card">
           <h2>📍 Location Info</h2>
@@ -135,7 +137,10 @@ const AdaptiveNewsReader = () => {
           <div className="network-status">
             <h3>📡 Network Status</h3>
             <p>
-              <strong>Connection Type:</strong> {connectionType}
+              <strong>Connection Type:</strong> {effectiveType}
+            </p>
+            <p>
+              <strong>Estimated Speed:</strong> {downlink} Mbps
             </p>
             <p>{getContentType()}</p>
           </div>

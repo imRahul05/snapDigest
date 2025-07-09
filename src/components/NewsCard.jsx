@@ -1,20 +1,28 @@
-// src/components/NewsCard.jsx
 import React from "react";
 
 const NewsCard = ({ article }) => {
-  const { title, description, url, urlToImage, source, publishedAt } = article;
+  const {
+    title,
+    snippet,
+    newsUrl,
+    images,
+    publisher,
+    timestamp
+  } = article;
+
+  const imageUrl = images?.thumbnail;
 
   return (
     <div style={styles.card}>
-      {urlToImage && <img src={urlToImage} alt={title} style={styles.image} />}
+      {imageUrl && <img src={imageUrl} alt={title} style={styles.image} />}
       <div style={styles.content}>
         <h3>{title}</h3>
-        <p style={styles.description}>{description}</p>
+        <p style={styles.description}>{snippet || "No summary available."}</p>
         <p style={styles.meta}>
-          <strong>{source.name}</strong> •{" "}
-          {new Date(publishedAt).toLocaleString()}
+          <strong>{publisher || "Unknown Source"}</strong> •{" "}
+          {timestamp ? new Date(parseInt(timestamp)).toLocaleString() : "Unknown time"}
         </p>
-        <a href={url} target="_blank" rel="noopener noreferrer">
+        <a href={newsUrl} target="_blank" rel="noopener noreferrer">
           Read full article →
         </a>
       </div>

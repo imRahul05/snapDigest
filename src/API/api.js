@@ -1,4 +1,4 @@
-
+import axios from 'axios';
 const GEOCODE_API_KEY = import.meta.env.VITE_GEOCODE_API_KEY;
 
 const getCurrentPosition = (onSuccess, onError) => {
@@ -44,16 +44,45 @@ const fetchLocationName = async (lat, lon) => {
 };
 
 
+// const fetchNewsFromAddress = async (city, state) => {
+//   const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+//   const locationKeyword = city || state || "India";
+
+//   const newsRes = await fetch(
+//     `https://newsapi.org/v2/everything?q=${locationKeyword}&apiKey=${API_KEY}`
+//   );
+//   const newsData = await newsRes.json();
+//   return newsData.articles;
+// };
 const fetchNewsFromAddress = async (city, state) => {
-  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-  const locationKeyword = city || state || "India";
+  const keywordParts = ["India"];
 
-  const newsRes = await fetch(
-    `https://newsapi.org/v2/everything?q=${locationKeyword}&apiKey=${API_KEY}`
-  );
-  const newsData = await newsRes.json();
-  return newsData.articles;
+  if (state) keywordParts.unshift(state);  // add to beginning
+  if (city) keywordParts.unshift(city);    // add to beginning
+
+  const keyword = keywordParts.join(" "); // e.g., "Bangalore Karnataka India"
+
+  const options = {
+    method: 'GET',
+    url: 'https://google-news13.p.rapidapi.com/search',
+    params: {
+      keyword,
+      lr: 'en-US'
+    },
+    headers: {
+      'x-rapidapi-key': import.meta.env.VITE_NEWS_API_KEY,
+      'x-rapidapi-host': 'google-news13.p.rapidapi.com'
+    }
+  };
+
+  try {
+    const response = await axios.request(options);
+    console.log(response)
+    return response.data.items || [];
+  } catch (error) {
+    console.error("Failed to fetch keyword news:", error.response?.data || error.message);
+    return [];
+  }
 };
-
 
 export { getCurrentPosition, fetchLocationName ,fetchNewsFromAddress};

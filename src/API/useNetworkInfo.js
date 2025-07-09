@@ -1,33 +1,40 @@
-// src/hooks/useNetworkInfo.js
+
 import { useEffect, useState } from "react";
 
-const getEffectiveConnectionType = () => {
-  if ('connection' in navigator) {
-    return navigator.connection.effectiveType;
+const getNetworkInfo = () => {
+  if ("connection" in navigator) {
+    const { effectiveType, downlink } = navigator.connection;
+    return {
+      effectiveType: effectiveType || "unknown",
+      downlink: downlink || 0, // in Mbps
+    };
   }
-  return 'unknown';
+  return {
+    effectiveType: "unknown",
+    downlink: 0,
+  };
 };
 
 const useNetworkInfo = () => {
-  const [connectionType, setConnectionType] = useState(getEffectiveConnectionType());
+  const [networkInfo, setNetworkInfo] = useState(getNetworkInfo());
 
   useEffect(() => {
-    const updateConnection = () => {
-      setConnectionType(getEffectiveConnectionType());
+    const updateNetworkInfo = () => {
+      setNetworkInfo(getNetworkInfo());
     };
 
-    if ('connection' in navigator) {
-      navigator.connection.addEventListener("change", updateConnection);
+    if ("connection" in navigator) {
+      navigator.connection.addEventListener("change", updateNetworkInfo);
     }
 
     return () => {
-      if ('connection' in navigator) {
-        navigator.connection.removeEventListener("change", updateConnection);
+      if ("connection" in navigator) {
+        navigator.connection.removeEventListener("change", updateNetworkInfo);
       }
     };
   }, []);
 
-  return connectionType;
+  return networkInfo;
 };
 
 export default useNetworkInfo;
