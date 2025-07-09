@@ -116,10 +116,6 @@ The application utilizes several browser JavaScript APIs:
    - Used in `src/components/CanvasProgressBar.jsx`
    - Creates a smooth progress indicator with gradient and animation effects
 
-5. **Intersection Observer API**
-   - Detects when articles are visible in the viewport
-   - Enables highlighting of currently visible articles
-   - Improves user experience by drawing attention to current content
 
 ## 🚀 Installation
 

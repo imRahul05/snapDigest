@@ -11,10 +11,10 @@ const CanvasProgressBar = ({ progress = 0 }) => {
     const width = canvas.width;
     const height = canvas.height;
 
-    // Clear canvas
+
     ctx.clearRect(0, 0, width, height);
 
-    // Draw background
+
     ctx.fillStyle = '#f1f1f1';
     ctx.fillRect(0, 0, width, height);
 
@@ -26,7 +26,6 @@ const CanvasProgressBar = ({ progress = 0 }) => {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width * progress, height);
 
-    // Add a small animation effect
     const shine = Math.min(progress + 0.1, 1);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
     ctx.fillRect(width * progress - 10, 0, 10, height);
@@ -40,7 +39,7 @@ const CanvasProgressBar = ({ progress = 0 }) => {
       height={5}
       style={{
         position: 'fixed',
-        top: 80, // Below navbar
+        top: 80,
         left: 0,
         zIndex: 100,
         boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
